@@ -3,8 +3,7 @@ from django.contrib.auth.models import User
 from smart_selects.db_fields import ChainedForeignKey
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-
-import arrow
+import string,random,arrow
 class Department(models.Model):
     dept_name=models.CharField(max_length=128)
     def __str__(self):
@@ -47,6 +46,14 @@ class Complaint(models.Model):
                             auto_choose=False,
                             sort=True,)
     complaint_desc=models.CharField(max_length=1500,blank=False,null=False,default='code')
+    identifier = models.CharField(max_length=16,blank=True,editable=False)
+    def save(self):
+        def id_generator(size=6):
+            return ''.join([random.choice(string.digits) for i in range(size)])
+        if not self.identifier:
+        # Generate ID once, then check the db. If exists, keep trying.
+            self.identifier = id_generator()
+        super(Complaint, self).save()
 
     def __str__(self):
         return '{}/{}/{}' .format(self.dept_name,self.complaint_type,self.auto_increment_id)

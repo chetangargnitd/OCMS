@@ -17,9 +17,10 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.conf import settings
 from django.conf. urls.static import static
+from two_factor.urls import urlpatterns as tf_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^chaining/', include('smart_selects.urls')),
-
-]
+    url(r'', include('two_factor.urls', 'two_factor')),
+    ]
